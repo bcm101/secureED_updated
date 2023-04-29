@@ -1,6 +1,6 @@
 <?php
 
-class SecurityContext {
+class SecurityContext { // Defines the interface that the client (faculty) is going to use. All client operations are handled by an instance of this
     public $state;
     public $userMachine;
 
@@ -15,7 +15,8 @@ class SecurityContext {
 
 }
 
-class FacultyFunctionContext {
+class FacultyFunctionContext { // Defines the same function requests as security context. This is where requests get forwarded from the user state machine.
+    
     public $state;
 
     function __construct($isFaculty) {
@@ -28,19 +29,21 @@ class FacultyFunctionContext {
 
 }
 
-class SecureState {
+class SecureState { //An interface for the possible operations handled by the security state machine
     function handle() {
 
     }
 }
 
-class FacultyFunctionState {
+class FacultyFunctionState { // Has the same interface as SecureState. Defines the user level state machine.
+    
     function handle() {
         
     }
 }
 
-class ConcreteFacultyFunctionState extends FacultyFunctionState{
+class ConcreteFacultyFunctionState extends FacultyFunctionState{ // Implements the user level state dependent behavior for the enter grades function.
+    
     public $isFaculty;
 
     function __construct($isFaculty) {
@@ -96,6 +99,7 @@ class ConcreteFacultyFunctionState extends FacultyFunctionState{
             
             }else{
                 echo("no submission found");
+                return false;
             }
 
 
@@ -109,7 +113,7 @@ class ConcreteFacultyFunctionState extends FacultyFunctionState{
     }
 }
 
-class ConcreteState extends SecureState{
+class ConcreteState extends SecureState{ //  implements the security state dependent behavior for the operation of entering the grades
     public $session;
 
     function isFaculty() {
