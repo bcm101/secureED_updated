@@ -27,17 +27,23 @@ try {
         $department="defaultvalue!";
     }
 
-    $query = "	SELECT Section.CRN, Course.CourseName, Section.Year, Section.Semester, User.Email, Section.Location
+    $statement = "	SELECT Section.CRN, Course.CourseName, Section.Year, Section.Semester, User.Email, Section.Location
             FROM Section
             CROSS JOIN Course ON Section.Course = Course.Code
             INNER JOIN User ON Section.Instructor = User.UserID
-            WHERE (CRN LIKE '$courseid' OR '$courseid'='defaultvalue!') AND
-                    (Semester LIKE '$semester' OR '$semester'='defaultvalue!') AND
-                    (Course LIKE '$department' OR '$department'='defaultvalue!') AND
-                    (CourseName LIKE '$coursename' OR '$coursename' = 'defaultvalue!')";
+            WHERE (CRN LIKE :courseID OR :courseID ='defaultvalue!') AND
+                    (Semester LIKE :semester OR :semester ='defaultvalue!') AND
+                    (Course LIKE :department OR :department ='defaultvalue!') AND
+                    (CourseName LIKE :coursename OR :coursename = 'defaultvalue!')";
 
-    $results = $db->query($query);
+    $stmt = $db_r->prepare($statement);
+    $stmt->bindParam(':courseID', $courseid);
+    $stmt->bindParam(':semester', $semester);
+    $stmt->bindParam(':department', $department);
+    $stmt->bindParam(':coursename', $coursename);
 
+    $results = $stmt->execute();
+    
     while ($row = $results->fetchArray(SQLITE3_ASSOC)) {
         $jsonArray[] = $row;
     }
