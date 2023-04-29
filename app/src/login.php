@@ -45,9 +45,6 @@ try {
 
     $count = $stmt1->execute();
 
-
-
-
     //query for the row(s)
     $statement = "SELECT * FROM User WHERE Email=:username AND (Password=:password OR Password=:hashpassword)";
 
