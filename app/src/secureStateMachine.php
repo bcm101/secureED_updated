@@ -81,12 +81,19 @@ class ConcreteFacultyFunctionState extends FacultyFunctionState{ // Implements t
             
                 //insert data into the database if csv
                 if($path['extension'] == 'csv') { //check if file is .csv
-                    while (($data = fgetcsv($handle, 9001, ",")) !== FALSE) { //iterate through csv
-                        $crn = $db->escapeString($crn); //sanitize the crn
-                        $stmt->bindParam(':crn', $crn);
-                        $stmt->bindParam(':studentID', $data[0]);
-                        $stmt->bindParam(':grade', $data[1]);
-                        $stmt->execute();
+                    while (($line = fgetcsv($handle, 20)) !== FALSE) { //iterate through csv
+
+                        $str = implode("", $line);
+                        $pattern = '/^[0-9]{9},[A-DF]{1}(\+|\-){0,1}$/';
+                        
+                        if(preg_match($pattern, $str) == 1){
+                            $crn = $db->escapeString($crn); //sanitize the crn
+                            $stmt->bindParam(':crn', $crn);
+                            $stmt->bindParam(':studentID', $data[0]);
+                            $stmt->bindParam(':grade', $data[1]);
+                            $stmt->execute();
+                        }
+                        
                     }
             
                     $db->backup($db, "temp", $GLOBALS['dbPath']);
